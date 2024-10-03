@@ -21,7 +21,7 @@ namespace task_4_setkaliev_02_10_2024
                 Console.Write("Введите элемент: ");
                 int num = Convert.ToInt32(Console.ReadLine());
 
-                if (Math.Abs(num) % 5 == 0) count++;
+                if ((num % 5 == 0) && (num % 2 != 0)) count++;
             }
 
             Console.WriteLine("Количество элементов, оканчивающихся на \"5\": " + count);
