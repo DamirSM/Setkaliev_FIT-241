@@ -30,6 +30,7 @@ namespace task_3_setkaliev_02_10_2024
                     max2 = max1;
                     max1 = num;
                 }
+                if (max2 < num) max2 = num;
                 Console.WriteLine($"num: {num} | max2: {max2} | max1: {max1}");
             }
             Console.WriteLine($"Первый максимум: {max1}, второй максимум: {max2}");
