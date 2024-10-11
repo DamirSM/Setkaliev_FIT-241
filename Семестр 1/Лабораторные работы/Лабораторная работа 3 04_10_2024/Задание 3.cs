@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +18,7 @@ namespace task_3_setkaliev_04_10_2024
                 "\nВведите количество элементов: ");
             int n = Convert.ToInt32(Console.ReadLine());
             bool check = false;
+            bool last_check = false;
             int sum = 0;
             int maxsum = int.MinValue;
 
@@ -28,18 +29,20 @@ namespace task_3_setkaliev_04_10_2024
 
                 if (num % 2 == 0)
                 {
+                    last_check = true;
                     check = true;
                     sum += num;
                 }
                 else
                 {
-                    if ((maxsum < sum) && (check)) maxsum = sum;
+                    if ((maxsum < sum) && (last_check)) maxsum = sum;
                     sum = 0;
+                    last_check = false;
                 }
                 Console.WriteLine("sum: " + sum + " | maxsum: " + maxsum);
             }
 
-            if ((maxsum < sum) && (check)) maxsum = sum;
+            if ((maxsum < sum) && (last_check)) maxsum = sum;
 
             if (!check) Console.WriteLine("В последовательности отсутствуют " +
                 "чётные элементы");
