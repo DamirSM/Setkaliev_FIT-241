@@ -38,7 +38,7 @@ namespace task_2_setkaliev_04_10_2024
                 prevnum = num;
             }
 
-            if ((maxcount < count) && (count != 1)) maxcount = count;
+            if ((maxcount < count) && (count != 0)) maxcount = count;
 
             if (maxcount == int.MinValue) Console.WriteLine("В последовательности отсутствуют " +
                 "подпоследовательности одинаковых чётных элементов");
