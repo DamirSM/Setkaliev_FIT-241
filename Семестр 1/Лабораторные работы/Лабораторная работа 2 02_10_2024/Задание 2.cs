@@ -10,8 +10,8 @@ namespace task_2_setkaliev_02_10_2024
     {
         static void Main(string[] args)
         {
-            // Определение наличия нечётных чисел в последовательности n элементов
-            Console.Write("Определение наличия нечётных чисел в последовательности n элементов\n" +
+            // Определение наличия чётности всех чисел в последовательности n элементов
+            Console.Write("Определение наличия чётности всех чисел в последовательности n элементов\n" +
                 "Введите количество элементов последовательности: ");
             int n = Convert.ToInt32(Console.ReadLine());
             bool check = true;
@@ -25,7 +25,7 @@ namespace task_2_setkaliev_02_10_2024
                 Console.WriteLine(check);
             }
 
-            if (check) Console.WriteLine("В последовательности отсутствуют нечётные элементы");
+            if (check) Console.WriteLine("В последовательности все элементы чётные");
             else Console.WriteLine("В последовательности имеются нечётные элементы");
 
             //switch (check)
