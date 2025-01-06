@@ -25,7 +25,7 @@ namespace task_3_setkaliev_02_10_2024
             {
                 Console.Write("Введите элемент: ");
                 int num = Convert.ToInt32(Console.ReadLine());
-                if (max1 < num)
+                if (max1 <= num)
                 {
                     max2 = max1;
                     max1 = num;
