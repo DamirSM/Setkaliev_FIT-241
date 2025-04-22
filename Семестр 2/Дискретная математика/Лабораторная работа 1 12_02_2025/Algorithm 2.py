@@ -13,8 +13,6 @@ matrix = [
 
 n = len(matrix)
 
-count = 0
-
 vertices = [i for i in range(n)]
 new_list = vertices
 
