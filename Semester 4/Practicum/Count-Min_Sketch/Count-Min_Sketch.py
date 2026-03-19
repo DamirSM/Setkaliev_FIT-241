@@ -55,7 +55,6 @@ def stream_dates():
 
 STREAM_SIZES = {"norm": 250_000, "big": 1_150_000}
 EPSILONS = [0.01]
-DELTAS = [0.1, 0.01, 0.001]
 
 
 class TestCountMinSketch(unittest.TestCase):
@@ -148,126 +147,126 @@ class TestCountMinSketch(unittest.TestCase):
         for r in errors:
             self.assertLessEqual(r[3], max_allowed_error)
 
-# STREAM_SIZES = {"norm": 250_000, "big": 1_150_000}
-# EPSILONS = [0.02, 0.01, 0.005]
-# DELTAS = [0.1, 0.01, 0.001]
-#
-# def evaluate_hyperparameters():
-#     results = []
-#
-#     for eps in EPSILONS:
-#         for delta in DELTAS:
-#             for size_name, n in STREAM_SIZES.items():
-#
-#                 cms = CountMinSketch(epsilon=eps, delta=delta)
-#                 stream = stream_dates()
-#                 counts = {}
-#
-#                 for i, item in enumerate(stream):
-#                     if i >= n:
-#                         break
-#                     counts[item] = counts.get(item, 0) + 1
-#                     cms.add(item)
-#
-#                 sample_items = list(counts.keys())[:100]
-#
-#                 abs_errors = []
-#                 rel_errors = []
-#
-#                 for item in sample_items:
-#                     est = cms.estimate(item)
-#                     exact = counts[item]
-#
-#                     abs_err = abs(est - exact)
-#                     rel_err = abs_err / exact * 100
-#
-#                     abs_errors.append(abs_err)
-#                     rel_errors.append(rel_err)
-#
-#                 avg_abs = sum(abs_errors) / len(abs_errors)
-#                 avg_rel = sum(rel_errors) / len(rel_errors)
-#
-#                 results.append({
-#                     "epsilon": eps,
-#                     "delta": delta,
-#                     "size": size_name,
-#                     "avg_abs": avg_abs,
-#                     "avg_rel": avg_rel
-#                 })
-#
-#     return results
-#
-#
-# def print_table(results):
-#     print(f"{'size':^20}{'epsilon':^20}{'delta':^20}{'avg_abs':^20}{'avg_rel (%)':^20}")
-#     for r in results:
-#         print(f"{r['size']:^20}{r['epsilon']:^20.6f}{r['delta']:^20.6f}"
-#               f"{r['avg_abs']:^20.2f}{r['avg_rel']:^20.2f}")
-#     print()
-#
-#     with open("cms_results.txt", "w", encoding="utf-8") as f:
-#         f.write(f"{'size':^20}{'epsilon':^20}{'delta':^20}{'avg_abs':^20}{'avg_rel (%)':^20}\n")
-#         for r in results:
-#             f.write(f"{r['size']:^20}{r['epsilon']:^20.6f}{r['delta']:^20.6f}"
-#                     f"{r['avg_abs']:^20.2f}{r['avg_rel']:^20.2f}\n")
-#
-# def plot_results(results):
-#     fixed_delta = 0.01
-#
-#     plt.figure()
-#
-#     for size_name in STREAM_SIZES:
-#         xs = []
-#         ys_abs = []
-#
-#         for r in results:
-#             if r["delta"] == fixed_delta and r["size"] == size_name:
-#                 xs.append(r["epsilon"])
-#                 ys_abs.append(r["avg_abs"])
-#
-#         pairs = sorted(zip(xs, ys_abs))
-#         xs, ys_abs = zip(*pairs)
-#
-#         plt.plot(xs, ys_abs, marker='o', label=f"{size_name}")
-#
-#     plt.xlabel("epsilon")
-#     plt.ylabel("Average absolute error")
-#     plt.title("Absolute error vs epsilon (delta = 0.01)")
-#     plt.legend()
-#     plt.grid(True)
-#     plt.savefig(f"cms_epsilon.png")
-#     plt.show()
-#
-#     fixed_epsilon = 0.01
-#
-#     plt.figure()
-#
-#     for size_name in STREAM_SIZES:
-#         xs = []
-#         ys_abs = []
-#
-#         for r in results:
-#             if r["epsilon"] == fixed_epsilon and r["size"] == size_name:
-#                 xs.append(r["delta"])
-#                 ys_abs.append(r["avg_abs"])
-#
-#         pairs = sorted(zip(xs, ys_abs))
-#         xs, ys_abs = zip(*pairs)
-#
-#         plt.plot(xs, ys_abs, marker='o', label=f"{size_name}")
-#
-#     plt.xlabel("delta")
-#     plt.ylabel("Average absolute error")
-#     plt.title("Absolute error vs delta (epsilon = 0.01)")
-#     plt.legend()
-#     plt.grid(True)
-#     plt.savefig(f"cms_delta.png")
-#     plt.show()
+STREAM_SIZES = {"norm": 250_000, "big": 1_150_000}
+EPSILONS = [0.02, 0.01, 0.005]
+DELTAS = [0.1, 0.01, 0.001]
+
+def evaluate_hyperparameters():
+    results = []
+
+    for eps in EPSILONS:
+        for delta in DELTAS:
+            for size_name, n in STREAM_SIZES.items():
+
+                cms = CountMinSketch(epsilon=eps, delta=delta)
+                stream = stream_dates()
+                counts = {}
+
+                for i, item in enumerate(stream):
+                    if i >= n:
+                        break
+                    counts[item] = counts.get(item, 0) + 1
+                    cms.add(item)
+
+                sample_items = list(counts.keys())[:100]
+
+                abs_errors = []
+                rel_errors = []
+
+                for item in sample_items:
+                    est = cms.estimate(item)
+                    exact = counts[item]
+
+                    abs_err = abs(est - exact)
+                    rel_err = abs_err / exact * 100
+
+                    abs_errors.append(abs_err)
+                    rel_errors.append(rel_err)
+
+                avg_abs = sum(abs_errors) / len(abs_errors)
+                avg_rel = sum(rel_errors) / len(rel_errors)
+
+                results.append({
+                    "epsilon": eps,
+                    "delta": delta,
+                    "size": size_name,
+                    "avg_abs": avg_abs,
+                    "avg_rel": avg_rel
+                })
+
+    return results
+
+
+def print_table(results):
+    print(f"{'size':^20}{'epsilon':^20}{'delta':^20}{'avg_abs':^20}{'avg_rel (%)':^20}")
+    for r in results:
+        print(f"{r['size']:^20}{r['epsilon']:^20.6f}{r['delta']:^20.6f}"
+              f"{r['avg_abs']:^20.2f}{r['avg_rel']:^20.2f}")
+    print()
+
+    with open("cms_results.txt", "w", encoding="utf-8") as f:
+        f.write(f"{'size':^20}{'epsilon':^20}{'delta':^20}{'avg_abs':^20}{'avg_rel (%)':^20}\n")
+        for r in results:
+            f.write(f"{r['size']:^20}{r['epsilon']:^20.6f}{r['delta']:^20.6f}"
+                    f"{r['avg_abs']:^20.2f}{r['avg_rel']:^20.2f}\n")
+
+def plot_results(results):
+    fixed_delta = 0.01
+
+    plt.figure()
+
+    for size_name in STREAM_SIZES:
+        xs = []
+        ys_abs = []
+
+        for r in results:
+            if r["delta"] == fixed_delta and r["size"] == size_name:
+                xs.append(r["epsilon"])
+                ys_abs.append(r["avg_abs"])
+
+        pairs = sorted(zip(xs, ys_abs))
+        xs, ys_abs = zip(*pairs)
+
+        plt.plot(xs, ys_abs, marker='o', label=f"{size_name}")
+
+    plt.xlabel("epsilon")
+    plt.ylabel("Average absolute error")
+    plt.title("Absolute error vs epsilon (delta = 0.01)")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"cms_epsilon.png")
+    plt.show()
+
+    fixed_epsilon = 0.01
+
+    plt.figure()
+
+    for size_name in STREAM_SIZES:
+        xs = []
+        ys_abs = []
+
+        for r in results:
+            if r["epsilon"] == fixed_epsilon and r["size"] == size_name:
+                xs.append(r["delta"])
+                ys_abs.append(r["avg_abs"])
+
+        pairs = sorted(zip(xs, ys_abs))
+        xs, ys_abs = zip(*pairs)
+
+        plt.plot(xs, ys_abs, marker='o', label=f"{size_name}")
+
+    plt.xlabel("delta")
+    plt.ylabel("Average absolute error")
+    plt.title("Absolute error vs delta (epsilon = 0.01)")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"cms_delta.png")
+    plt.show()
 
 
 if __name__ == "__main__":
     unittest.main()
 
-# results = evaluate_hyperparameters()
-# print_table(results)
-# plot_results(results)
+results = evaluate_hyperparameters()
+print_table(results)
+plot_results(results)
