@@ -52,11 +52,30 @@ class BloomFilter:
                 return False
         return True
 
+    def __add__(self, other):
+        if self.m != other.m or self.k != other.k or self.hash_func != other.hash_func:
+            raise ValueError("Filters must have same parameters and hash function")
+        result = CountingBloomFilter(self.n, self.epsilon)
+
+        for i in range(self.m):
+            result.array[i] = self.array[i] | other.array[i]
+
+        return result
+
+    def __sub__(self, other):
+        if self.m != other.m or self.k != other.k or self.hash_func != other.hash_func:
+            raise ValueError("Filters must have same parameters and hash function")
+        result = CountingBloomFilter(self.n, self.epsilon)
+
+        for i in range(self.m):
+            result.array[i] = self.array[i] & other.array[i]
+
+        return result
+
 class CountingBloomFilter(BloomFilter):
 
     def __init__(self, n, epsilon, hash_func=hashlib.blake2b):
         super().__init__(n, epsilon, hash_func=hash_func)
-        self.array = [0] * self.m
 
     def add(self, item):
         hashes = self.hashes(item)
@@ -69,34 +88,25 @@ class CountingBloomFilter(BloomFilter):
             if self.array[h] > 0:
                 self.array[h] -= 1
 
-    def check(self, item):
-        hashes = self.hashes(item)
-        for h in hashes:
-            if self.array[h] == 0:
-                return False
-        return True
-
     def __add__(self, other):
         if self.m != other.m or self.k != other.k or self.hash_func != other.hash_func:
             raise ValueError("Filters must have same parameters and hash function")
-        else:
-            result = CountingBloomFilter(self.n, self.epsilon)
+        result = CountingBloomFilter(self.n, self.epsilon)
 
-            for i in range(self.m):
-                result.array[i] = self.array[i] + other.array[i]
+        for i in range(self.m):
+            result.array[i] = self.array[i] + other.array[i]
 
-            return result
+        return result
 
     def __sub__(self, other):
         if self.m != other.m or self.k != other.k or self.hash_func != other.hash_func:
             raise ValueError("Filters must have same parameters and hash function")
-        else:
-            result = CountingBloomFilter(self.n, self.epsilon)
+        result = CountingBloomFilter(self.n, self.epsilon)
 
-            for i in range(self.m):
-                result.array[i] = min(self.array[i], other.array[i])
+        for i in range(self.m):
+            result.array[i] = min(self.array[i], other.array[i])
 
-            return result
+        return result
 
 def theoretical_error(k, n, m):
     return (1 - math.exp(-k * n / m)) ** k
@@ -136,7 +146,9 @@ ratios = [0.25, 0.5, 0.75, 0.95]
 
 results_table = []
 
+fig_num = 0
 for n, eps in params:
+    fig_num += 1
 
     bf = CountingBloomFilter(n=n, epsilon=eps)
 
@@ -172,10 +184,10 @@ for n, eps in params:
             "theory =", round(theory, 6)
         )
 
-    print("n\tepsilon\tfill\texp_error\tvariance\ttheory")
+    print(f"{'n':^20}{'epsilon':^20}{'fill':^20}{'exp_error':^20}{'variance':^20}{'theory':^20}")
 
     for row in results_table:
-        print(f"{row[0]}\t{row[1]}\t{row[2]}\t{round(row[3], 6)}\t{round(row[4], 6)}\t{round(row[5], 6)}")
+        print(f"{row[0]:^20}{row[1]:^20}{row[2]:^20}{row[3]:^20.6}{row[4]:^20.6}{row[5]:^20.6}")
 
     plt.plot(fills, exp_errors, label="Experimental error")
     plt.plot(fills, theory_errors, label="Theoretical error")
@@ -184,7 +196,14 @@ for n, eps in params:
     plt.ylabel("False positive probability")
     plt.title("Bloom Filter False Positives")
     plt.legend()
+    plt.savefig(f"bloom_false_positives{fig_num}.png")
     plt.show()
+
+with open("bloom_results.txt", "w", encoding="utf-8") as f:
+    f.write(f"{'n':^20}{'epsilon':^20}{'fill':^20}{'exp_error':^20}{'variance':^20}{'theory':^20}\n")
+
+    for row in results_table:
+        f.write(f"{row[0]:^20}{row[1]:^20}{row[2]:^20}{row[3]:^20.6f}{row[4]:^20.6f}{row[5]:^20.6f}\n")
 
 class TestBloom(unittest.TestCase):
 
